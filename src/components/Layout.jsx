@@ -35,7 +35,7 @@ const Layout = () => {
           </div>
         )}
         
-        <div className={isMobile ? "" : "nav-links"}>
+        <div className={isMobile ? "nav-links-mobile" : "nav-links"}>
           <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
             <LayoutDashboard size={24} />
             <span>Dashboard</span>

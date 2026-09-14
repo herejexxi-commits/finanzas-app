@@ -69,6 +69,10 @@ const Dashboard = () => {
     value: incomesByCategory[key]
   }));
 
+  const currentMonthExpense = expenses.reduce((a, b) => a + b.amount, 0);
+  const currentMonthIncome = incomes.reduce((a, b) => a + b.amount, 0);
+  const currentMonthNet = currentMonthIncome - currentMonthExpense;
+
   const COLORS_EXPENSES = ['#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#64748b'];
   const COLORS_INCOMES = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#64748b'];
 
@@ -94,20 +98,25 @@ const Dashboard = () => {
             ${unifiedBalance.toFixed(2)}
           </h2>
         </div>
-        <div style={{ textAlign: 'right' }}>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Saldo Inicial: ${initialBalance.toFixed(2)}</p>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Transacciones: ${totalTransactionsBalance.toFixed(2)}</p>
-        </div>
+        {/* Breakdown removed as per user request to avoid confusion */}
       </div>
 
-      <h2 style={{ marginBottom: '16px', fontSize: '1.2rem', color: 'var(--text-main)' }}>Resumen del Mes Actual</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+        <h2 style={{ fontSize: '1.2rem', color: 'var(--text-main)', margin: 0 }}>Resumen del Mes Actual</h2>
+        <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: '20px', border: '1px solid var(--border-color)' }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginRight: '8px' }}>Ganancia Neta del Mes:</span>
+          <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: currentMonthNet >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)' }}>
+            {currentMonthNet >= 0 ? '+' : ''}${currentMonthNet.toFixed(2)}
+          </span>
+        </div>
+      </div>
 
       <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
         {/* Gráfico de Gastos */}
         <div className="glass-panel" style={{ padding: '20px', height: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h3 style={{ color: 'var(--text-main)', marginBottom: '10px' }}>Gastos ({currentDate.toLocaleString('default', { month: 'long' })})</h3>
           <p style={{ color: 'var(--accent-danger)', fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '10px' }}>
-            ${expenses.reduce((a, b) => a + b.amount, 0).toFixed(2)}
+            ${currentMonthExpense.toFixed(2)}
           </p>
           {expensesChartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
@@ -138,7 +147,7 @@ const Dashboard = () => {
         <div className="glass-panel" style={{ padding: '20px', height: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h3 style={{ color: 'var(--text-main)', marginBottom: '10px' }}>Ingresos ({currentDate.toLocaleString('default', { month: 'long' })})</h3>
           <p style={{ color: 'var(--accent-success)', fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '10px' }}>
-             ${incomes.reduce((a, b) => a + b.amount, 0).toFixed(2)}
+             ${currentMonthIncome.toFixed(2)}
           </p>
           {incomesChartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">

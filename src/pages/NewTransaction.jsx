@@ -91,7 +91,6 @@ const NewTransaction = () => {
             />
           </div>
 
-          {/* Categoría */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Categoría</label>
             <select 
@@ -113,20 +112,30 @@ const NewTransaction = () => {
               <option value="">Selecciona una categoría</option>
               {formData.type === 'gasto' ? (
                 <>
-                  <option value="Negocio Tatuajes">Negocio Tatuajes 💉</option>
-                  <option value="Negocio Tienda Virtual">Negocio Tienda Virtual 🛒</option>
-                  <option value="Casa">Casa 🏠</option>
-                  <option value="Alimentación">Alimentación 🍔</option>
-                  <option value="Transporte">Transporte 🚗</option>
-                  <option value="Ocio">Ocio 🎬</option>
-                  <option value="Otros">Otros 📦</option>
+                  <optgroup label="Personal">
+                    <option value="Vivienda y Servicios">Vivienda y Servicios 🏠</option>
+                    <option value="Supermercado y Despensa">Supermercado y Despensa 🛒</option>
+                    <option value="Ocio y Salidas">Ocio y Salidas 🍔</option>
+                    <option value="Movilidad">Movilidad 🚗</option>
+                    <option value="Educación y Desarrollo">Educación y Desarrollo 📚</option>
+                    <option value="Salud y Bienestar">Salud y Bienestar 🏋️</option>
+                    <option value="Inversiones">Inversiones (Broker) 📈</option>
+                  </optgroup>
+                  <optgroup label="Negocio Tatuajes">
+                    <option value="Operativo Tatuajes">Operativo Tatuajes 💉</option>
+                    <option value="Marketing y Publicidad Tatuajes">Marketing y Publicidad Tatuajes 📢</option>
+                  </optgroup>
+                  <optgroup label="Negocio Tienda Virtual">
+                    <option value="Operativo Tienda">Operativo Tienda 🛍️</option>
+                    <option value="Marketing y Publicidad Tienda">Marketing y Publicidad Tienda 📢</option>
+                  </optgroup>
                 </>
               ) : (
                 <>
                   <option value="Tatuajes">Tatuajes 💉</option>
-                  <option value="Piercing">Piercing 💎</option>
-                  <option value="Tienda Virtual">Tienda Virtual 🛒</option>
-                  <option value="Otros">Otros 📦</option>
+                  <option value="Piercings">Piercings 💎</option>
+                  <option value="Tienda Virtual">Tienda Virtual 🛍️</option>
+                  <option value="Otros Ingresos">Otros Ingresos 💰</option>
                 </>
               )}
             </select>

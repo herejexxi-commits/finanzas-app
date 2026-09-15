@@ -80,6 +80,20 @@ const Dashboard = () => {
   const COLORS_EXPENSES = ['#ff003c', '#ff6b00', '#ffaa00', '#d800ff', '#ff009d', '#555555'];
   const COLORS_INCOMES = ['#00ffd0', '#009dff', '#7b00ff', '#ffaa00', '#555555'];
 
+  const RADIAN = Math.PI / 180;
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+    if (percent < 0.05) return null;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '0.9rem', fontWeight: 'bold', fontFamily: 'Rajdhani', textShadow: '0px 0px 4px rgba(0,0,0,0.8)' }}>
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
   const renderCustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
@@ -112,7 +126,11 @@ const Dashboard = () => {
           {data.expensesChartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={data.expensesChartData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={2} dataKey="value" stroke="var(--bg-card)">
+                <Pie 
+                  data={data.expensesChartData} cx="50%" cy="45%" innerRadius={50} outerRadius={80} 
+                  paddingAngle={2} dataKey="value" stroke="var(--bg-card)"
+                  labelLine={false} label={renderCustomizedLabel}
+                >
                   {data.expensesChartData.map((e, i) => <Cell key={`cell-${i}`} fill={COLORS_EXPENSES[i % COLORS_EXPENSES.length]} />)}
                 </Pie>
                 <Tooltip content={renderCustomTooltip} />
@@ -130,7 +148,11 @@ const Dashboard = () => {
           {data.incomesChartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={data.incomesChartData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={2} dataKey="value" stroke="var(--bg-card)">
+                <Pie 
+                  data={data.incomesChartData} cx="50%" cy="45%" innerRadius={50} outerRadius={80} 
+                  paddingAngle={2} dataKey="value" stroke="var(--bg-card)"
+                  labelLine={false} label={renderCustomizedLabel}
+                >
                   {data.incomesChartData.map((e, i) => <Cell key={`cell-${i}`} fill={COLORS_INCOMES[i % COLORS_INCOMES.length]} />)}
                 </Pie>
                 <Tooltip content={renderCustomTooltip} />
@@ -153,7 +175,8 @@ const Dashboard = () => {
                     { name: 'Ingresos', value: data.totalInc },
                     { name: 'Gastos', value: data.totalExp }
                   ]} 
-                  cx="50%" cy="50%" innerRadius={0} outerRadius={90} paddingAngle={2} dataKey="value" stroke="var(--bg-card)"
+                  cx="50%" cy="45%" innerRadius={0} outerRadius={80} paddingAngle={2} dataKey="value" stroke="var(--bg-card)"
+                  labelLine={false} label={renderCustomizedLabel}
                 >
                   <Cell fill="var(--accent-success)" />
                   <Cell fill="var(--accent-danger)" />

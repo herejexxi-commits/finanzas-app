@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getTransactions } from '../services/transactionService';
+import { getInitialBalance } from '../services/settingsService';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 const Dashboard = () => {
@@ -8,23 +9,22 @@ const Dashboard = () => {
   const [initialBalance, setInitialBalance] = useState(0);
 
   useEffect(() => {
-    const savedBalance = localStorage.getItem('initialBalance');
-    if (savedBalance) {
-      setInitialBalance(parseFloat(savedBalance));
-    }
-
-    const fetchTransactions = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getTransactions();
-        setTransactions(data);
+        const [transactionsData, balanceData] = await Promise.all([
+          getTransactions(),
+          getInitialBalance()
+        ]);
+        setTransactions(transactionsData);
+        setInitialBalance(balanceData);
       } catch (error) {
-        console.error("Error cargando historial", error);
+        console.error("Error cargando dashboard", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchTransactions();
+    fetchData();
   }, []);
 
   if (isLoading) {

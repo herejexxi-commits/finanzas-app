@@ -1,24 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../services/supabaseClient';
+import { getInitialBalance, updateInitialBalance } from '../services/settingsService';
 
 const Settings = () => {
   const [initialBalance, setInitialBalance] = useState('');
   const [isSaved, setIsSaved] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    // Cargar el saldo inicial de localStorage al montar el componente
-    const savedBalance = localStorage.getItem('initialBalance');
-    if (savedBalance) {
-      setInitialBalance(savedBalance);
-    }
+    const fetchBalance = async () => {
+      const balance = await getInitialBalance();
+      setInitialBalance(balance.toString());
+    };
+    fetchBalance();
   }, []);
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    localStorage.setItem('initialBalance', initialBalance);
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000); // Ocultar mensaje después de 3 segundos
+    setIsSaving(true);
+    try {
+      await updateInitialBalance(initialBalance);
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 3000); // Ocultar mensaje después de 3 segundos
+    } catch (error) {
+      alert("Error al guardar el saldo inicial: " + error.message);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const parseCSV = (text) => {
@@ -140,6 +149,7 @@ const Settings = () => {
 
           <button 
             type="submit" 
+            disabled={isSaving}
             style={{ 
               marginTop: '10px',
               padding: '16px', 
@@ -149,11 +159,12 @@ const Settings = () => {
               fontSize: '1.1rem',
               fontWeight: 'bold',
               boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)',
-              cursor: 'pointer',
-              transition: 'transform 0.2s, box-shadow 0.2s'
+              cursor: isSaving ? 'not-allowed' : 'pointer',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+              opacity: isSaving ? 0.7 : 1
             }}
           >
-            Guardar Saldo
+            {isSaving ? 'Guardando...' : 'Guardar Saldo'}
           </button>
           
           {isSaved && (

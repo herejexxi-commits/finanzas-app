@@ -1,20 +1,20 @@
 :root {
-  --bg-dark: #0f172a;
-  --bg-card: rgba(30, 41, 59, 0.7);
-  --bg-card-hover: rgba(30, 41, 59, 0.9);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
+  --bg-dark: #060606;
+  --bg-card: #0d0d0d;
+  --bg-card-hover: #141414;
+  --text-main: #ffffff;
+  --text-muted: #888888;
   
-  /* Accents */
-  --accent-primary: #3b82f6;
-  --accent-primary-hover: #2563eb;
-  --accent-success: #10b981;
-  --accent-danger: #ef4444;
-  --accent-warning: #f59e0b;
+  /* Accents - Cyberpunk Palette */
+  --accent-primary: #ff6b00; /* Neon Orange */
+  --accent-primary-hover: #ff8c33;
+  --accent-success: #00ffd0; /* Neon Teal */
+  --accent-danger: #ff003c; /* Neon Red/Pink */
+  --accent-warning: #ffaa00;
 
-  --border-color: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  --glass-backdrop: blur(12px);
+  --border-color: rgba(255, 107, 0, 0.2);
+  --glass-shadow: 0 0 20px rgba(255, 107, 0, 0.05);
+  --neon-glow: 0 0 10px rgba(255, 107, 0, 0.5), 0 0 20px rgba(255, 107, 0, 0.3);
 }
 
 * {
@@ -24,22 +24,34 @@
 }
 
 body {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Rajdhani', sans-serif;
   background-color: var(--bg-dark);
   color: var(--text-main);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 1.1rem;
 }
 
-/* Glassmorphism Utilities */
+/* Cyberpunk Card Style */
 .glass-panel {
   background: var(--bg-card);
-  backdrop-filter: var(--glass-backdrop);
-  -webkit-backdrop-filter: var(--glass-backdrop);
   border: 1px solid var(--border-color);
   box-shadow: var(--glass-shadow);
-  border-radius: 16px;
+  border-radius: 0; /* Cyberpunk is usually sharp */
+  position: relative;
+}
+
+/* Decorative corner accents for cards */
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid var(--accent-primary);
+  border-left: 2px solid var(--accent-primary);
 }
 
 /* Scrollbar */
@@ -50,14 +62,15 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--bg-card);
-  border-radius: 10px;
+  background: var(--accent-primary);
 }
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 p {

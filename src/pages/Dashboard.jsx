@@ -76,14 +76,14 @@ const Dashboard = () => {
   const tiendaData = processChartData(tiendaTransactions);
   const personalData = processChartData(personalTransactions);
 
-  const COLORS_EXPENSES = ['#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#64748b'];
-  const COLORS_INCOMES = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#64748b'];
+  const COLORS_EXPENSES = ['#ff003c', '#ff6b00', '#ffaa00', '#d800ff', '#ff009d', '#555555'];
+  const COLORS_INCOMES = ['#00ffd0', '#009dff', '#7b00ff', '#ffaa00', '#555555'];
 
   const renderCustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
-        <div style={{ backgroundColor: 'var(--bg-card)', padding: '10px', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
-          <p style={{ color: 'var(--text-main)', margin: 0 }}>{`${payload[0].name} : $${payload[0].value.toFixed(2)}`}</p>
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: '10px', border: '1px solid var(--accent-primary)', boxShadow: 'var(--neon-glow)' }}>
+          <p style={{ color: 'var(--text-main)', margin: 0, fontFamily: 'Rajdhani', fontWeight: 600 }}>{`${payload[0].name} : $${payload[0].value.toFixed(2)}`}</p>
         </div>
       );
     }
@@ -93,10 +93,10 @@ const Dashboard = () => {
   const renderDashboardSection = (title, data) => (
     <div style={{ marginBottom: '40px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
-        <h2 style={{ fontSize: '1.2rem', color: 'var(--text-main)', margin: 0 }}>{title} ({currentDate.toLocaleString('default', { month: 'long' })})</h2>
-        <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: '20px', border: '1px solid var(--border-color)' }}>
-          <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginRight: '8px' }}>Ganancia Neta:</span>
-          <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: data.net >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)' }}>
+        <h2 style={{ fontSize: '1.5rem', color: 'var(--accent-primary)', margin: 0 }}>{title} <span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>({currentDate.toLocaleString('default', { month: 'short' })})</span></h2>
+        <div style={{ background: 'var(--bg-card)', padding: '8px 16px', border: '1px solid var(--accent-primary)', boxShadow: '0 0 10px rgba(255, 107, 0, 0.2)' }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '1rem', marginRight: '8px', textTransform: 'uppercase' }}>NET YIELD:</span>
+          <span style={{ fontWeight: 'bold', fontSize: '1.2rem', fontFamily: 'Orbitron', color: data.net >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)', textShadow: data.net >= 0 ? '0 0 5px var(--accent-success)' : '0 0 5px var(--accent-danger)' }}>
             {data.net >= 0 ? '+' : ''}${data.net.toFixed(2)}
           </span>
         </div>
@@ -104,44 +104,44 @@ const Dashboard = () => {
 
       <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
         <div className="glass-panel" style={{ padding: '20px', height: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <h3 style={{ color: 'var(--text-main)', marginBottom: '10px' }}>Gastos</h3>
-          <p style={{ color: 'var(--accent-danger)', fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '10px' }}>
+          <h3 style={{ color: 'var(--text-muted)', marginBottom: '10px' }}>GASTOS</h3>
+          <p style={{ color: 'var(--accent-danger)', fontWeight: 'bold', fontFamily: 'Orbitron', fontSize: '1.3rem', marginBottom: '10px', textShadow: '0 0 5px var(--accent-danger)' }}>
             ${data.totalExp.toFixed(2)}
           </p>
           {data.expensesChartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={data.expensesChartData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={2} dataKey="value">
+                <Pie data={data.expensesChartData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={2} dataKey="value" stroke="var(--bg-card)">
                   {data.expensesChartData.map((e, i) => <Cell key={`cell-${i}`} fill={COLORS_EXPENSES[i % COLORS_EXPENSES.length]} />)}
                 </Pie>
                 <Tooltip content={renderCustomTooltip} />
-                <Legend />
+                <Legend wrapperStyle={{ fontFamily: 'Rajdhani', fontSize: '0.9rem' }}/>
               </PieChart>
             </ResponsiveContainer>
           ) : <p style={{ color: 'var(--text-muted)', marginTop: 'auto', marginBottom: 'auto' }}>No hay gastos</p>}
         </div>
 
         <div className="glass-panel" style={{ padding: '20px', height: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <h3 style={{ color: 'var(--text-main)', marginBottom: '10px' }}>Ingresos</h3>
-          <p style={{ color: 'var(--accent-success)', fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '10px' }}>
+          <h3 style={{ color: 'var(--text-muted)', marginBottom: '10px' }}>INGRESOS</h3>
+          <p style={{ color: 'var(--accent-success)', fontWeight: 'bold', fontFamily: 'Orbitron', fontSize: '1.3rem', marginBottom: '10px', textShadow: '0 0 5px var(--accent-success)' }}>
              ${data.totalInc.toFixed(2)}
           </p>
           {data.incomesChartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={data.incomesChartData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={2} dataKey="value">
+                <Pie data={data.incomesChartData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={2} dataKey="value" stroke="var(--bg-card)">
                   {data.incomesChartData.map((e, i) => <Cell key={`cell-${i}`} fill={COLORS_INCOMES[i % COLORS_INCOMES.length]} />)}
                 </Pie>
                 <Tooltip content={renderCustomTooltip} />
-                <Legend />
+                <Legend wrapperStyle={{ fontFamily: 'Rajdhani', fontSize: '0.9rem' }}/>
               </PieChart>
             </ResponsiveContainer>
           ) : <p style={{ color: 'var(--text-muted)', marginTop: 'auto', marginBottom: 'auto' }}>No hay ingresos</p>}
         </div>
 
         <div className="glass-panel" style={{ padding: '20px', height: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <h3 style={{ color: 'var(--text-main)', marginBottom: '10px' }}>Balance General</h3>
-          <p style={{ color: 'var(--text-muted)', fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '10px' }}>
+          <h3 style={{ color: 'var(--text-muted)', marginBottom: '10px' }}>SYS.BALANCE</h3>
+          <p style={{ color: 'var(--accent-primary)', fontWeight: 'bold', fontFamily: 'Orbitron', fontSize: '1.2rem', marginBottom: '10px' }}>
             VS
           </p>
           {(data.totalInc > 0 || data.totalExp > 0) ? (
@@ -152,13 +152,13 @@ const Dashboard = () => {
                     { name: 'Ingresos', value: data.totalInc },
                     { name: 'Gastos', value: data.totalExp }
                   ]} 
-                  cx="50%" cy="50%" innerRadius={0} outerRadius={90} paddingAngle={2} dataKey="value"
+                  cx="50%" cy="50%" innerRadius={0} outerRadius={90} paddingAngle={2} dataKey="value" stroke="var(--bg-card)"
                 >
-                  <Cell fill="#10b981" /> {/* Verde para ingresos */}
-                  <Cell fill="#ef4444" /> {/* Rojo para gastos */}
+                  <Cell fill="var(--accent-success)" />
+                  <Cell fill="var(--accent-danger)" />
                 </Pie>
                 <Tooltip content={renderCustomTooltip} />
-                <Legend />
+                <Legend wrapperStyle={{ fontFamily: 'Rajdhani', fontSize: '0.9rem' }}/>
               </PieChart>
             </ResponsiveContainer>
           ) : <p style={{ color: 'var(--text-muted)', marginTop: 'auto', marginBottom: 'auto' }}>No hay movimientos</p>}

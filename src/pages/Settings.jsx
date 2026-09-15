@@ -170,7 +170,7 @@ const Settings = () => {
               color: 'white', 
               fontSize: '1.1rem',
               fontWeight: 'bold',
-              boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)',
+              boxShadow: '0 4px 15px rgba(255, 107, 0, 0.3)',
               cursor: isSaving ? 'not-allowed' : 'pointer',
               transition: 'transform 0.2s, box-shadow 0.2s',
               opacity: isSaving ? 0.7 : 1

@@ -214,7 +214,7 @@ const NewTransaction = () => {
               color: 'white', 
               fontSize: '1.1rem',
               fontWeight: 'bold',
-              boxShadow: (isLoading || isDeleting) ? 'none' : '0 4px 15px rgba(59, 130, 246, 0.3)',
+              boxShadow: (isLoading || isDeleting) ? 'none' : '0 4px 15px rgba(255, 107, 0, 0.3)',
               cursor: (isLoading || isDeleting) ? 'not-allowed' : 'pointer'
             }}
           >

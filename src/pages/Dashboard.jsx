@@ -138,6 +138,31 @@ const Dashboard = () => {
             </ResponsiveContainer>
           ) : <p style={{ color: 'var(--text-muted)', marginTop: 'auto', marginBottom: 'auto' }}>No hay ingresos</p>}
         </div>
+
+        <div className="glass-panel" style={{ padding: '20px', height: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <h3 style={{ color: 'var(--text-main)', marginBottom: '10px' }}>Balance General</h3>
+          <p style={{ color: 'var(--text-muted)', fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '10px' }}>
+            VS
+          </p>
+          {(data.totalInc > 0 || data.totalExp > 0) ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie 
+                  data={[
+                    { name: 'Ingresos', value: data.totalInc },
+                    { name: 'Gastos', value: data.totalExp }
+                  ]} 
+                  cx="50%" cy="50%" innerRadius={0} outerRadius={90} paddingAngle={2} dataKey="value"
+                >
+                  <Cell fill="#10b981" /> {/* Verde para ingresos */}
+                  <Cell fill="#ef4444" /> {/* Rojo para gastos */}
+                </Pie>
+                <Tooltip content={renderCustomTooltip} />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : <p style={{ color: 'var(--text-muted)', marginTop: 'auto', marginBottom: 'auto' }}>No hay movimientos</p>}
+        </div>
       </div>
     </div>
   );

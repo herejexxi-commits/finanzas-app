@@ -23,6 +23,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="historial" element={<History />} />
             <Route path="nueva-transaccion" element={<NewTransaction />} />
+            <Route path="editar-transaccion/:id" element={<NewTransaction />} />
             <Route path="configuracion" element={<Settings />} />
           </Route>
         </Routes>

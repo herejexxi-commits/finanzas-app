@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { getInitialBalance, updateInitialBalance } from '../services/settingsService';
+import { deleteAllTransactions } from '../services/transactionService';
 
 const Settings = () => {
   const [initialBalance, setInitialBalance] = useState('');
@@ -113,6 +114,17 @@ const Settings = () => {
     reader.readAsText(file);
   };
 
+  const handleDeleteHistory = async () => {
+    if (window.confirm("¡CUIDADO! ¿Estás completamente seguro de que deseas eliminar TODAS las transacciones de tu historial? Esta acción no se puede deshacer.")) {
+      try {
+        await deleteAllTransactions();
+        alert("El historial ha sido eliminado exitosamente.");
+      } catch (error) {
+        alert("Hubo un error al eliminar el historial: " + error.message);
+      }
+    }
+  };
+
   return (
     <div className="animate-fade-in" style={{ maxWidth: '600px', margin: '0 auto' }}>
       <h1 style={{ marginBottom: '24px' }}>Configuración</h1>
@@ -207,6 +219,29 @@ const Settings = () => {
           }}
         />
         {isImporting && <p style={{ marginTop: '10px', color: 'var(--accent-primary)' }}>Importando datos, por favor espera...</p>}
+      </div>
+
+      <div className="glass-panel" style={{ padding: '24px', marginTop: '24px', border: '1px solid var(--accent-danger)' }}>
+        <h2 style={{ fontSize: '1.2rem', marginBottom: '16px', color: 'var(--accent-danger)' }}>Peligro: Borrar Datos</h2>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '20px', fontSize: '0.95rem', lineHeight: '1.5' }}>
+          Esta acción eliminará todas las transacciones de tu historial de forma permanente. Hazlo solo si deseas empezar desde cero o vas a importar un historial limpio.
+        </p>
+        <button 
+          onClick={handleDeleteHistory}
+          style={{ 
+            width: '100%',
+            padding: '16px', 
+            borderRadius: '8px', 
+            background: 'transparent', 
+            color: 'var(--accent-danger)', 
+            border: '1px solid var(--accent-danger)',
+            fontSize: '1.1rem',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+        >
+          Borrar todo el historial
+        </button>
       </div>
     </div>
   );

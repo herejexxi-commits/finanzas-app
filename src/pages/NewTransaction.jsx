@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { addTransaction } from '../services/transactionService';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { addTransaction, getTransactionById, updateTransaction, deleteTransaction } from '../services/transactionService';
 
 const NewTransaction = () => {
   const navigate = useNavigate();
-  const [type, setType] = [useState('gasto'), (t) => t]; // Fix: we need state for form
+  const { id } = useParams();
+  const isEditing = !!id;
   const [formData, setFormData] = useState({
     type: 'gasto',
     amount: '',
@@ -12,9 +13,30 @@ const NewTransaction = () => {
     description: ''
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    if (isEditing) {
+      const fetchTx = async () => {
+        try {
+          const tx = await getTransactionById(id);
+          setFormData({
+            type: tx.type,
+            amount: tx.amount.toString(),
+            category: tx.category,
+            description: tx.description
+          });
+        } catch (error) {
+          alert("Error cargando la transacción");
+          navigate('/historial');
+        }
+      };
+      fetchTx();
+    }
+  }, [id, isEditing, navigate]);
 
   const handleTypeChange = (newType) => {
-    setFormData({ ...formData, type: newType });
+    setFormData({ ...formData, type: newType, category: '' });
   };
 
   const handleSubmit = async (e) => {
@@ -26,7 +48,11 @@ const NewTransaction = () => {
     
     setIsLoading(true);
     try {
-      await addTransaction(formData);
+      if (isEditing) {
+        await updateTransaction(id, formData);
+      } else {
+        await addTransaction(formData);
+      }
       navigate('/historial'); // Redirigir al historial después de guardar
     } catch (error) {
       alert("Hubo un error al guardar: " + error.message);
@@ -35,9 +61,22 @@ const NewTransaction = () => {
     }
   };
 
+  const handleDelete = async () => {
+    if (window.confirm("¿Estás seguro de que deseas eliminar esta transacción?")) {
+      setIsDeleting(true);
+      try {
+        await deleteTransaction(id);
+        navigate('/historial');
+      } catch (error) {
+        alert("Hubo un error al eliminar: " + error.message);
+        setIsDeleting(false);
+      }
+    }
+  };
+
   return (
     <div className="animate-fade-in" style={{ maxWidth: '600px', margin: '0 auto' }}>
-      <h1 style={{ marginBottom: '24px' }}>Nueva Transacción</h1>
+      <h1 style={{ marginBottom: '24px' }}>{isEditing ? 'Editar Transacción' : 'Nueva Transacción'}</h1>
       
       <div className="glass-panel" style={{ padding: '24px' }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -166,21 +205,41 @@ const NewTransaction = () => {
           {/* Guardar */}
           <button 
             type="submit" 
-            disabled={isLoading}
+            disabled={isLoading || isDeleting}
             style={{ 
               marginTop: '10px',
               padding: '16px', 
               borderRadius: '8px', 
-              background: isLoading ? 'var(--text-muted)' : 'var(--accent-primary)', 
+              background: (isLoading || isDeleting) ? 'var(--text-muted)' : 'var(--accent-primary)', 
               color: 'white', 
               fontSize: '1.1rem',
               fontWeight: 'bold',
-              boxShadow: isLoading ? 'none' : '0 4px 15px rgba(59, 130, 246, 0.3)',
-              cursor: isLoading ? 'not-allowed' : 'pointer'
+              boxShadow: (isLoading || isDeleting) ? 'none' : '0 4px 15px rgba(59, 130, 246, 0.3)',
+              cursor: (isLoading || isDeleting) ? 'not-allowed' : 'pointer'
             }}
           >
-            {isLoading ? 'Guardando...' : 'Guardar Transacción'}
+            {isLoading ? 'Guardando...' : (isEditing ? 'Guardar Cambios' : 'Guardar Transacción')}
           </button>
+          
+          {isEditing && (
+            <button 
+              type="button" 
+              disabled={isLoading || isDeleting}
+              onClick={handleDelete}
+              style={{ 
+                padding: '16px', 
+                borderRadius: '8px', 
+                background: 'transparent', 
+                color: 'var(--accent-danger)', 
+                border: '1px solid var(--accent-danger)',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                cursor: (isLoading || isDeleting) ? 'not-allowed' : 'pointer'
+              }}
+            >
+              {isDeleting ? 'Eliminando...' : 'Eliminar Transacción'}
+            </button>
+          )}
         </form>
       </div>
     </div>

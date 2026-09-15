@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getTransactions } from '../services/transactionService';
+import { formatCurrency } from '../utils/format';
 
 const History = () => {
   const [transactions, setTransactions] = useState([]);
@@ -96,7 +97,7 @@ const History = () => {
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px', minWidth: '100px' }}>
                       <div style={{ fontWeight: 'bold', fontSize: '1.2rem', color: tx.type === 'ingreso' ? 'var(--accent-success)' : 'var(--text-main)', textAlign: 'right' }}>
-                        {tx.type === 'gasto' ? '-' : '+'}${tx.amount.toFixed(2)}
+                        {tx.type === 'gasto' ? '-' : '+'}{formatCurrency(tx.amount)}
                       </div>
                       <Link to={`/editar-transaccion/${tx.id}`} style={{ fontSize: '0.8rem', color: 'var(--accent-primary)', textDecoration: 'none', padding: '4px 8px', border: '1px solid var(--accent-primary)', borderRadius: '4px' }}>
                         Editar

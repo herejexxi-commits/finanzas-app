@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getTransactions } from '../services/transactionService';
 import { getInitialBalance } from '../services/settingsService';
+import { formatCurrency } from '../utils/format';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 const Dashboard = () => {
@@ -83,7 +84,7 @@ const Dashboard = () => {
     if (active && payload && payload.length) {
       return (
         <div style={{ backgroundColor: 'var(--bg-card)', padding: '10px', border: '1px solid var(--accent-primary)', boxShadow: 'var(--neon-glow)' }}>
-          <p style={{ color: 'var(--text-main)', margin: 0, fontFamily: 'Rajdhani', fontWeight: 600 }}>{`${payload[0].name} : $${payload[0].value.toFixed(2)}`}</p>
+          <p style={{ color: 'var(--text-main)', margin: 0, fontFamily: 'Rajdhani', fontWeight: 600 }}>{`${payload[0].name} : ${formatCurrency(payload[0].value)}`}</p>
         </div>
       );
     }
@@ -97,7 +98,7 @@ const Dashboard = () => {
         <div style={{ background: 'var(--bg-card)', padding: '8px 16px', border: '1px solid var(--accent-primary)', boxShadow: '0 0 10px rgba(255, 107, 0, 0.2)' }}>
           <span style={{ color: 'var(--text-muted)', fontSize: '1rem', marginRight: '8px', textTransform: 'uppercase' }}>NET YIELD:</span>
           <span style={{ fontWeight: 'bold', fontSize: '1.2rem', fontFamily: 'Orbitron', color: data.net >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)', textShadow: data.net >= 0 ? '0 0 5px var(--accent-success)' : '0 0 5px var(--accent-danger)' }}>
-            {data.net >= 0 ? '+' : ''}${data.net.toFixed(2)}
+            {data.net > 0 ? '+' : ''}{formatCurrency(data.net)}
           </span>
         </div>
       </div>
@@ -106,7 +107,7 @@ const Dashboard = () => {
         <div className="glass-panel" style={{ padding: '20px', height: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h3 style={{ color: 'var(--text-muted)', marginBottom: '10px' }}>GASTOS</h3>
           <p style={{ color: 'var(--accent-danger)', fontWeight: 'bold', fontFamily: 'Orbitron', fontSize: '1.3rem', marginBottom: '10px', textShadow: '0 0 5px var(--accent-danger)' }}>
-            ${data.totalExp.toFixed(2)}
+            {formatCurrency(data.totalExp)}
           </p>
           {data.expensesChartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
@@ -124,7 +125,7 @@ const Dashboard = () => {
         <div className="glass-panel" style={{ padding: '20px', height: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h3 style={{ color: 'var(--text-muted)', marginBottom: '10px' }}>INGRESOS</h3>
           <p style={{ color: 'var(--accent-success)', fontWeight: 'bold', fontFamily: 'Orbitron', fontSize: '1.3rem', marginBottom: '10px', textShadow: '0 0 5px var(--accent-success)' }}>
-             ${data.totalInc.toFixed(2)}
+             {formatCurrency(data.totalInc)}
           </p>
           {data.incomesChartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
@@ -175,7 +176,7 @@ const Dashboard = () => {
         <div>
           <p style={{ color: 'var(--text-muted)', marginBottom: '8px' }}>Saldo Total Unificado</p>
           <h2 style={{ fontSize: '2.5rem', color: unifiedBalance >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)' }}>
-            ${unifiedBalance.toFixed(2)}
+            {formatCurrency(unifiedBalance)}
           </h2>
         </div>
       </div>

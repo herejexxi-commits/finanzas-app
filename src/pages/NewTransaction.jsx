@@ -177,6 +177,7 @@ const NewTransaction = () => {
                 <>
                   <optgroup label="Personal">
                     <option value="Vivienda y Servicios">Vivienda y Servicios 🏠</option>
+                    <option value="Vivienda - Segundo Inmueble">Vivienda - Segundo Inmueble 🏠</option>
                     <option value="Supermercado y Despensa">Supermercado y Despensa 🛒</option>
                     <option value="Ocio y Salidas">Ocio y Salidas 🍔</option>
                     <option value="Movilidad">Movilidad 🚗</option>

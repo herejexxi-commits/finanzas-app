@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
 import { getTransactions } from '../services/transactionService';
-import { generateFinancialAdvice } from '../services/aiService';
-import { Brain, Loader2 } from 'lucide-react';
+import { generateFinancialPrompt } from '../services/aiService';
+import { Brain, Copy, Check } from 'lucide-react';
 
 const AiAdvisor = () => {
   const [transactions, setTransactions] = useState([]);
-  const [advice, setAdvice] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [hasApiKey, setHasApiKey] = useState(true);
+  const [promptText, setPromptText] = useState('');
+  const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
         const txs = await getTransactions();
-        // Filtrar solo las del mes actual para el análisis
         const currentDate = new Date();
         const currentMonthTxs = txs.filter(tx => {
           const txDate = new Date(tx.created_at);
@@ -27,30 +23,18 @@ const AiAdvisor = () => {
       }
     };
     fetchTransactions();
-    
-    // Verificar si hay API key
-    if (!localStorage.getItem('geminiApiKey')) {
-      setHasApiKey(false);
-    }
   }, []);
 
-  const handleGenerateAdvice = async () => {
-    setIsLoading(true);
-    setError('');
-    
-    try {
-      const response = await generateFinancialAdvice(transactions);
-      setAdvice(response);
-    } catch (err) {
-      if (err.message === 'API_KEY_MISSING') {
-        setError('No has configurado tu API Key de Gemini. Ve a Ajustes para añadirla.');
-        setHasApiKey(false);
-      } else {
-        setError(err.message || 'Error al generar el análisis');
-      }
-    } finally {
-      setIsLoading(false);
-    }
+  const handleGeneratePrompt = () => {
+    const prompt = generateFinancialPrompt(transactions);
+    setPromptText(prompt);
+    setIsCopied(false);
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(promptText);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 3000);
   };
 
   return (
@@ -60,77 +44,82 @@ const AiAdvisor = () => {
         <h1 style={{ margin: 0 }}>Asesor IA</h1>
       </div>
 
-      {!hasApiKey ? (
-        <div className="glass-panel" style={{ padding: '32px', textAlign: 'center', border: '1px solid var(--accent-danger)' }}>
-          <h2 style={{ color: 'var(--accent-danger)', marginBottom: '16px' }}>Configuración Necesaria</h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>
-            Para usar el Asesor IA, necesitas configurar tu API Key de Google Gemini. 
-            Puedes obtenerla gratis en Google AI Studio y pegarla en la sección de Ajustes.
+      <div className="glass-panel" style={{ padding: '32px', textAlign: 'center', marginBottom: '32px' }}>
+        <h2 style={{ fontSize: '1.4rem', marginBottom: '16px' }}>Generador de Análisis</h2>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '24px', fontSize: '1.1rem' }}>
+          Este botón recopilará tus {transactions.length} transacciones del mes y creará un texto listo para que lo pegues en ChatGPT, Gemini o Claude.
+        </p>
+        <button 
+          onClick={handleGeneratePrompt}
+          disabled={transactions.length === 0}
+          style={{ 
+            padding: '16px 32px', 
+            borderRadius: '8px', 
+            background: transactions.length === 0 ? 'var(--bg-card)' : 'var(--accent-primary)', 
+            color: transactions.length === 0 ? 'var(--text-muted)' : 'white', 
+            fontSize: '1.2rem',
+            fontWeight: 'bold',
+            boxShadow: transactions.length === 0 ? 'none' : '0 4px 15px rgba(255, 107, 0, 0.3)',
+            cursor: transactions.length === 0 ? 'not-allowed' : 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '10px'
+          }}
+        >
+          Generar Texto para IA
+        </button>
+        {transactions.length === 0 && (
+          <p style={{ color: 'var(--accent-danger)', marginTop: '16px', fontSize: '0.9rem' }}>
+            No tienes transacciones este mes para analizar.
           </p>
-        </div>
-      ) : (
-        <>
-          <div className="glass-panel" style={{ padding: '24px', marginBottom: '32px', textAlign: 'center' }}>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '24px', fontSize: '1.1rem' }}>
-              La Inteligencia Artificial analizará tus {transactions.length} transacciones de este mes y te dará recomendaciones personalizadas.
-            </p>
-            <button 
-              onClick={handleGenerateAdvice}
-              disabled={isLoading || transactions.length === 0}
-              style={{ 
-                padding: '16px 32px', 
-                borderRadius: '8px', 
-                background: (isLoading || transactions.length === 0) ? 'var(--bg-card)' : 'var(--accent-primary)', 
-                color: (isLoading || transactions.length === 0) ? 'var(--text-muted)' : 'white', 
-                fontSize: '1.2rem',
-                fontWeight: 'bold',
-                boxShadow: (isLoading || transactions.length === 0) ? 'none' : '0 4px 15px rgba(255, 107, 0, 0.3)',
-                cursor: (isLoading || transactions.length === 0) ? 'not-allowed' : 'pointer',
-                display: 'inline-flex',
+        )}
+      </div>
+
+      {promptText && (
+        <div className="glass-panel" style={{ padding: '24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <h3 style={{ margin: 0, color: 'var(--accent-primary)' }}>Texto Generado:</h3>
+            <button
+              onClick={handleCopy}
+              style={{
+                display: 'flex',
                 alignItems: 'center',
-                gap: '10px'
+                gap: '8px',
+                padding: '8px 16px',
+                borderRadius: '6px',
+                background: isCopied ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+                color: isCopied ? 'var(--accent-success)' : 'white',
+                border: `1px solid ${isCopied ? 'var(--accent-success)' : 'transparent'}`,
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                transition: 'all 0.2s'
               }}
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="animate-spin" size={24} />
-                  Analizando...
-                </>
-              ) : (
-                'Generar Análisis del Mes'
-              )}
+              {isCopied ? <Check size={20} /> : <Copy size={20} />}
+              {isCopied ? '¡Copiado!' : 'Copiar Texto'}
             </button>
-            {transactions.length === 0 && (
-              <p style={{ color: 'var(--accent-danger)', marginTop: '16px', fontSize: '0.9rem' }}>
-                No tienes transacciones este mes para analizar.
-              </p>
-            )}
           </div>
-
-          {error && (
-            <div style={{ 
-              padding: '16px', 
-              background: 'rgba(255, 0, 60, 0.1)', 
-              border: '1px solid var(--accent-danger)', 
+          <textarea
+            readOnly
+            value={promptText}
+            rows={10}
+            style={{
+              width: '100%',
+              padding: '16px',
               borderRadius: '8px',
-              color: 'var(--accent-danger)',
-              marginBottom: '24px'
-            }}>
-              {error}
-            </div>
-          )}
-
-          {advice && (
-            <div className="glass-panel" style={{ padding: '32px' }}>
-              <div className="markdown-content" style={{ 
-                lineHeight: '1.6', 
-                color: 'var(--text-main)' 
-              }}>
-                <ReactMarkdown>{advice}</ReactMarkdown>
-              </div>
-            </div>
-          )}
-        </>
+              background: 'rgba(0,0,0,0.3)',
+              border: '1px solid var(--border-color)',
+              color: 'var(--text-muted)',
+              fontSize: '1rem',
+              fontFamily: 'inherit',
+              resize: 'vertical',
+              lineHeight: '1.5'
+            }}
+          />
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '16px', textAlign: 'center' }}>
+            Copia este texto y pégalo en tu IA favorita para recibir tu asesoría financiera.
+          </p>
+        </div>
       )}
     </div>
   );

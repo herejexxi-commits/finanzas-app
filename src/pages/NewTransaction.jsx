@@ -10,7 +10,8 @@ const NewTransaction = () => {
     type: 'gasto',
     amount: '',
     category: '',
-    description: ''
+    description: '',
+    date: new Date().toISOString().split('T')[0]
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -24,7 +25,8 @@ const NewTransaction = () => {
             type: tx.type,
             amount: tx.amount.toString(),
             category: tx.category,
-            description: tx.description
+            description: tx.description,
+            date: tx.created_at ? new Date(tx.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
           });
         } catch (error) {
           alert("Error cargando la transacción");
@@ -105,6 +107,28 @@ const NewTransaction = () => {
               }}>
               Ingreso
             </button>
+          </div>
+
+          {/* Fecha */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Fecha</label>
+            <input 
+              type="date"
+              required
+              value={formData.date}
+              onChange={(e) => setFormData({...formData, date: e.target.value})}
+              style={{ 
+                width: '100%', 
+                padding: '16px', 
+                fontSize: '1.2rem', 
+                background: 'rgba(0,0,0,0.2)', 
+                border: '1px solid var(--border-color)', 
+                borderRadius: '8px',
+                color: 'var(--text-main)',
+                fontFamily: 'inherit',
+                colorScheme: 'dark' // Para que el calendario sea oscuro si es posible
+              }} 
+            />
           </div>
 
           {/* Monto */}

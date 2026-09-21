@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../services/supabaseClient';
-import { getInitialBalance, updateInitialBalance } from '../services/settingsService';
+import { getInitialBalance, updateInitialBalance, getGeminiApiKey, saveGeminiApiKey } from '../services/settingsService';
 import { deleteAllTransactions } from '../services/transactionService';
 
 const Settings = () => {
   const [initialBalance, setInitialBalance] = useState('');
+  const [geminiApiKey, setGeminiApiKey] = useState('');
   const [isSaved, setIsSaved] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const fetchBalance = async () => {
+    const fetchSettings = async () => {
       const balance = await getInitialBalance();
       setInitialBalance(balance.toString());
+      setGeminiApiKey(getGeminiApiKey());
     };
-    fetchBalance();
+    fetchSettings();
   }, []);
 
   const handleSave = async (e) => {
@@ -22,10 +24,11 @@ const Settings = () => {
     setIsSaving(true);
     try {
       await updateInitialBalance(initialBalance);
+      saveGeminiApiKey(geminiApiKey);
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 3000); // Ocultar mensaje después de 3 segundos
     } catch (error) {
-      alert("Error al guardar el saldo inicial: " + error.message);
+      alert("Error al guardar la configuración: " + error.message);
     } finally {
       setIsSaving(false);
     }
@@ -157,6 +160,29 @@ const Settings = () => {
                 fontFamily: 'inherit'
               }} 
             />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Gemini API Key</label>
+            <input 
+              type="password"
+              value={geminiApiKey}
+              onChange={(e) => setGeminiApiKey(e.target.value)}
+              placeholder="Pega tu API Key de Google Gemini aquí" 
+              style={{ 
+                width: '100%', 
+                padding: '16px', 
+                fontSize: '1rem', 
+                background: 'rgba(0,0,0,0.2)', 
+                border: '1px solid var(--border-color)', 
+                borderRadius: '8px',
+                color: 'var(--text-main)',
+                fontFamily: 'inherit'
+              }} 
+            />
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+              Esta clave se guardará de forma segura sólo en este dispositivo y te permitirá usar la función de Asesor IA.
+            </p>
           </div>
 
           <button 

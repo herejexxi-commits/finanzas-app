@@ -14,16 +14,20 @@ export const getTransactions = async () => {
 };
 
 export const addTransaction = async (transactionData) => {
+  const payload = {
+    type: transactionData.type,
+    amount: parseFloat(transactionData.amount),
+    category: transactionData.category,
+    description: transactionData.description || ''
+  };
+
+  if (transactionData.date) {
+    payload.created_at = new Date(`${transactionData.date}T12:00:00`).toISOString();
+  }
+
   const { data, error } = await supabase
     .from('transactions')
-    .insert([
-      {
-        type: transactionData.type,
-        amount: parseFloat(transactionData.amount),
-        category: transactionData.category,
-        description: transactionData.description || ''
-      }
-    ])
+    .insert([payload])
     .select();
 
   if (error) {
@@ -48,14 +52,20 @@ export const getTransactionById = async (id) => {
 };
 
 export const updateTransaction = async (id, transactionData) => {
+  const payload = {
+    type: transactionData.type,
+    amount: parseFloat(transactionData.amount),
+    category: transactionData.category,
+    description: transactionData.description || ''
+  };
+
+  if (transactionData.date) {
+    payload.created_at = new Date(`${transactionData.date}T12:00:00`).toISOString();
+  }
+
   const { data, error } = await supabase
     .from('transactions')
-    .update({
-      type: transactionData.type,
-      amount: parseFloat(transactionData.amount),
-      category: transactionData.category,
-      description: transactionData.description || ''
-    })
+    .update(payload)
     .eq('id', id)
     .select();
 

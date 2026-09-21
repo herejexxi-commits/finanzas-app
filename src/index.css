@@ -122,3 +122,27 @@ select option, select optgroup {
     padding-bottom: 32px;
   }
 }
+
+/* Markdown Styles for AI Advisor */
+.markdown-content h1, .markdown-content h2, .markdown-content h3 {
+  color: var(--accent-primary);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.markdown-content p {
+  margin-bottom: 1em;
+}
+
+.markdown-content ul, .markdown-content ol {
+  padding-left: 20px;
+  margin-bottom: 1em;
+}
+
+.markdown-content li {
+  margin-bottom: 0.5em;
+}
+
+.markdown-content strong {
+  color: white;
+}

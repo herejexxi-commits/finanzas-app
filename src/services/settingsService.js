@@ -39,3 +39,11 @@ export const updateInitialBalance = async (amount) => {
   
   return data[0];
 };
+
+export const getGeminiApiKey = () => {
+  return localStorage.getItem('geminiApiKey') || '';
+};
+
+export const saveGeminiApiKey = (key) => {
+  localStorage.setItem('geminiApiKey', key);
+};

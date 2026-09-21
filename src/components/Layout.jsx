@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Receipt, Plus, Wallet, Settings as SettingsIcon, LogOut } from 'lucide-react';
+import { LayoutDashboard, Receipt, Plus, Wallet, Settings as SettingsIcon, LogOut, Brain } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import './Layout.css';
 
@@ -44,6 +44,11 @@ const Layout = () => {
           <NavLink to="/historial" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
             <Receipt size={24} />
             <span>Historial</span>
+          </NavLink>
+
+          <NavLink to="/asesor-ia" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+            <Brain size={24} />
+            <span>Asesor IA</span>
           </NavLink>
           
           <NavLink to="/configuracion" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>

@@ -188,10 +188,12 @@ const NewTransaction = () => {
                   <optgroup label="Negocio Tatuajes">
                     <option value="Operativo Tatuajes">Operativo Tatuajes 💉</option>
                     <option value="Marketing y Publicidad Tatuajes">Marketing y Publicidad Tatuajes 📢</option>
+                    <option value="Suscripciones y Servicios Tatuajes">Suscripciones y Servicios Tatuajes 💻</option>
                   </optgroup>
                   <optgroup label="Negocio Tienda Virtual">
                     <option value="Operativo Tienda">Operativo Tienda 🛍️</option>
                     <option value="Marketing y Publicidad Tienda">Marketing y Publicidad Tienda 📢</option>
+                    <option value="Suscripciones y Servicios Tienda">Suscripciones y Servicios Tienda 💻</option>
                   </optgroup>
                 </>
               ) : (

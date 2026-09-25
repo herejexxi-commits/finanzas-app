@@ -45,7 +45,7 @@ const Dashboard = () => {
     return txDate.getMonth() === currentDate.getMonth() && txDate.getFullYear() === currentDate.getFullYear();
   });
 
-  const tiendaCategories = ['Operativo Tienda', 'Marketing y Publicidad Tienda', 'Tienda Virtual'];
+  const tiendaCategories = ['Operativo Tienda', 'Marketing y Publicidad Tienda', 'Suscripciones y Servicios Tienda', 'Tienda Virtual'];
   const tiendaTransactions = currentMonthTransactions.filter(tx => tiendaCategories.includes(tx.category));
   const personalTransactions = currentMonthTransactions.filter(tx => !tiendaCategories.includes(tx.category));
 

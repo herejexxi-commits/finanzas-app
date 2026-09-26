@@ -172,7 +172,7 @@ const Dashboard = () => {
               <PieChart>
                 <Pie 
                   data={[
-                    { name: 'Ingresos', value: data.totalInc },
+                    { name: 'Disponible', value: Math.max(0, data.totalInc - data.totalExp) },
                     { name: 'Gastos', value: data.totalExp }
                   ]} 
                   cx="50%" cy="45%" innerRadius={0} outerRadius={80} paddingAngle={2} dataKey="value" stroke="var(--bg-card)"

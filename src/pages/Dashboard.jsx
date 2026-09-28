@@ -118,7 +118,7 @@ const Dashboard = () => {
       </div>
 
       <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
-        <div className="glass-panel" style={{ padding: '20px', height: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div className="glass-panel" style={{ padding: '20px', height: '450px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h3 style={{ color: 'var(--text-muted)', marginBottom: '10px' }}>GASTOS</h3>
           <p style={{ color: 'var(--accent-danger)', fontWeight: 'bold', fontFamily: 'Orbitron', fontSize: '1.3rem', marginBottom: '10px', textShadow: '0 0 5px var(--accent-danger)' }}>
             {formatCurrency(data.totalExp)}
@@ -127,7 +127,7 @@ const Dashboard = () => {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie 
-                  data={data.expensesChartData} cx="50%" cy="45%" innerRadius={50} outerRadius={80} 
+                  data={data.expensesChartData} cx="50%" cy="40%" innerRadius={50} outerRadius={80} 
                   paddingAngle={2} dataKey="value" stroke="var(--bg-card)"
                   labelLine={false} label={renderCustomizedLabel}
                 >
@@ -140,7 +140,7 @@ const Dashboard = () => {
           ) : <p style={{ color: 'var(--text-muted)', marginTop: 'auto', marginBottom: 'auto' }}>No hay gastos</p>}
         </div>
 
-        <div className="glass-panel" style={{ padding: '20px', height: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div className="glass-panel" style={{ padding: '20px', height: '450px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h3 style={{ color: 'var(--text-muted)', marginBottom: '10px' }}>INGRESOS</h3>
           <p style={{ color: 'var(--accent-success)', fontWeight: 'bold', fontFamily: 'Orbitron', fontSize: '1.3rem', marginBottom: '10px', textShadow: '0 0 5px var(--accent-success)' }}>
              {formatCurrency(data.totalInc)}
@@ -149,7 +149,7 @@ const Dashboard = () => {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie 
-                  data={data.incomesChartData} cx="50%" cy="45%" innerRadius={50} outerRadius={80} 
+                  data={data.incomesChartData} cx="50%" cy="40%" innerRadius={50} outerRadius={80} 
                   paddingAngle={2} dataKey="value" stroke="var(--bg-card)"
                   labelLine={false} label={renderCustomizedLabel}
                 >
@@ -162,7 +162,7 @@ const Dashboard = () => {
           ) : <p style={{ color: 'var(--text-muted)', marginTop: 'auto', marginBottom: 'auto' }}>No hay ingresos</p>}
         </div>
 
-        <div className="glass-panel" style={{ padding: '20px', height: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div className="glass-panel" style={{ padding: '20px', height: '450px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h3 style={{ color: 'var(--text-muted)', marginBottom: '10px' }}>SYS.BALANCE</h3>
           <p style={{ color: 'var(--accent-primary)', fontWeight: 'bold', fontFamily: 'Orbitron', fontSize: '1.2rem', marginBottom: '10px' }}>
             VS
@@ -175,7 +175,7 @@ const Dashboard = () => {
                     { name: 'Disponible', value: Math.max(0, data.totalInc - data.totalExp) },
                     { name: 'Gastos', value: data.totalExp }
                   ]} 
-                  cx="50%" cy="45%" innerRadius={0} outerRadius={80} paddingAngle={2} dataKey="value" stroke="var(--bg-card)"
+                  cx="50%" cy="40%" innerRadius={0} outerRadius={80} paddingAngle={2} dataKey="value" stroke="var(--bg-card)"
                   labelLine={false} label={renderCustomizedLabel}
                 >
                   <Cell fill="var(--accent-success)" />

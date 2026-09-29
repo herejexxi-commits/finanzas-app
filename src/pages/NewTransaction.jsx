@@ -183,6 +183,7 @@ const NewTransaction = () => {
                     <option value="Movilidad">Movilidad 🚗</option>
                     <option value="Educación y Desarrollo">Educación y Desarrollo 📚</option>
                     <option value="Salud y Bienestar">Salud y Bienestar 🏋️</option>
+                    <option value="Apoyo Familiar">Apoyo Familiar 👨‍👩‍👧‍👦</option>
                     <option value="Inversiones">Inversiones (Broker) 📈</option>
                   </optgroup>
                   <optgroup label="Negocio Tatuajes">

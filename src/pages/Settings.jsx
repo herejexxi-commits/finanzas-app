@@ -129,78 +129,11 @@ const Settings = () => {
     <div className="animate-fade-in" style={{ maxWidth: '600px', margin: '0 auto' }}>
       <h1 style={{ marginBottom: '24px' }}>Configuración</h1>
       
-      <div className="glass-panel" style={{ padding: '24px', marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '1.2rem', marginBottom: '16px' }}>Saldo Inicial</h2>
-        <p style={{ color: 'var(--text-muted)', marginBottom: '20px', fontSize: '0.95rem', lineHeight: '1.5' }}>
-          Ingresa el saldo base con el que empiezas (la suma de tus cuentas bancarias y efectivo). 
-          Este valor se sumará a tus ingresos y restará a tus gastos para calcular el saldo unificado.
-        </p>
-        
-        <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Monto ($)</label>
-            <input 
-              type="number" 
-              step="0.01"
-              required
-              value={initialBalance}
-              onChange={(e) => setInitialBalance(e.target.value)}
-              placeholder="$0.00" 
-              style={{ 
-                width: '100%', 
-                padding: '16px', 
-                fontSize: '1.5rem', 
-                background: 'rgba(0,0,0,0.2)', 
-                border: '1px solid var(--border-color)', 
-                borderRadius: '8px',
-                color: 'var(--text-main)',
-                fontFamily: 'inherit'
-              }} 
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            disabled={isSaving}
-            style={{ 
-              marginTop: '10px',
-              padding: '16px', 
-              borderRadius: '8px', 
-              background: 'var(--accent-primary)', 
-              color: 'white', 
-              fontSize: '1.1rem',
-              fontWeight: 'bold',
-              boxShadow: '0 4px 15px rgba(255, 107, 0, 0.3)',
-              cursor: isSaving ? 'not-allowed' : 'pointer',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-              opacity: isSaving ? 0.7 : 1
-            }}
-          >
-            {isSaving ? 'Guardando...' : 'Guardar Saldo'}
-          </button>
-          
-          {isSaved && (
-            <div style={{ 
-              marginTop: '10px', 
-              padding: '12px', 
-              background: 'rgba(16, 185, 129, 0.2)', 
-              border: '1px solid var(--accent-success)', 
-              borderRadius: '8px',
-              color: 'var(--accent-success)',
-              textAlign: 'center',
-              fontWeight: 'bold'
-            }}>
-              ¡Saldo inicial guardado correctamente!
-            </div>
-          )}
-        </form>
-      </div>
-
       <div className="glass-panel" style={{ padding: '24px', marginBottom: '24px', border: '1px solid rgba(0, 255, 208, 0.3)' }}>
-        <h2 style={{ fontSize: '1.2rem', marginBottom: '16px', color: 'var(--accent-success)' }}>Sincronización Rápida (Recomendado)</h2>
+        <h2 style={{ fontSize: '1.2rem', marginBottom: '16px', color: 'var(--accent-success)' }}>Ajustar Saldo Actual</h2>
         <p style={{ color: 'var(--text-muted)', marginBottom: '20px', fontSize: '0.95rem', lineHeight: '1.5' }}>
-          Si el saldo en tu Dashboard no coincide con el de tus cuentas bancarias reales, ingresa aquí tu saldo total <b>REAL</b> (efectivo + bancos). 
-          El sistema ajustará el Saldo Inicial matemáticamente por detrás para que todo cuadre perfecto, sin afectar tu historial.
+          Ingresa aquí tu saldo total <b>REAL</b> (la suma exacta del efectivo y tus cuentas bancarias). 
+          El sistema lo establecerá como tu saldo base actual, sobre el cual se sumarán y restarán todas tus futuras transacciones.
         </p>
         
         <form onSubmit={async (e) => {

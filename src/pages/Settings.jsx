@@ -196,6 +196,86 @@ const Settings = () => {
         </form>
       </div>
 
+      <div className="glass-panel" style={{ padding: '24px', marginBottom: '24px', border: '1px solid rgba(0, 255, 208, 0.3)' }}>
+        <h2 style={{ fontSize: '1.2rem', marginBottom: '16px', color: 'var(--accent-success)' }}>Sincronización Rápida (Recomendado)</h2>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '20px', fontSize: '0.95rem', lineHeight: '1.5' }}>
+          Si el saldo en tu Dashboard no coincide con el de tus cuentas bancarias reales, ingresa aquí tu saldo total <b>REAL</b> (efectivo + bancos). 
+          El sistema ajustará el Saldo Inicial matemáticamente por detrás para que todo cuadre perfecto, sin afectar tu historial.
+        </p>
+        
+        <form onSubmit={async (e) => {
+          e.preventDefault();
+          setIsSaving(true);
+          try {
+            // 1. Get desired real balance
+            const desiredBalance = parseFloat(e.target.realBalance.value);
+            if (isNaN(desiredBalance)) throw new Error("Monto inválido");
+            
+            // 2. Fetch all transactions to calculate the net impact
+            const { getTransactions } = await import('../services/transactionService');
+            const transactions = await getTransactions();
+            const totalTx = transactions.reduce((acc, tx) => tx.type === 'ingreso' ? acc + tx.amount : acc - tx.amount, 0);
+            
+            // 3. Calculate what the initial balance SHOULD be
+            const newInitial = desiredBalance - totalTx;
+            
+            // 4. Update the settings
+            await updateInitialBalance(newInitial);
+            
+            // 5. Update local state
+            setInitialBalance(newInitial.toString());
+            
+            alert(`¡Sincronización exitosa! Tu saldo inicial se ajustó a ${newInitial}. Ve al Dashboard para confirmar tu nuevo saldo unificado de ${desiredBalance}.`);
+            e.target.reset();
+          } catch (error) {
+            alert("Error al sincronizar el saldo: " + error.message);
+          } finally {
+            setIsSaving(false);
+          }
+        }} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Monto REAL que tienes en tus cuentas ahora mismo ($)</label>
+            <input 
+              name="realBalance"
+              type="number" 
+              step="0.01"
+              required
+              placeholder="Ej. 8917111" 
+              style={{ 
+                width: '100%', 
+                padding: '16px', 
+                fontSize: '1.5rem', 
+                background: 'rgba(0,0,0,0.2)', 
+                border: '1px solid var(--border-color)', 
+                borderRadius: '8px',
+                color: 'var(--text-main)',
+                fontFamily: 'inherit'
+              }} 
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            disabled={isSaving}
+            style={{ 
+              marginTop: '10px',
+              padding: '16px', 
+              borderRadius: '8px', 
+              background: 'transparent', 
+              color: 'var(--accent-success)', 
+              border: '1px solid var(--accent-success)',
+              fontSize: '1.1rem',
+              fontWeight: 'bold',
+              cursor: isSaving ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s',
+              opacity: isSaving ? 0.7 : 1
+            }}
+          >
+            {isSaving ? 'Sincronizando...' : 'Sincronizar Saldo'}
+          </button>
+        </form>
+      </div>
+
       <div className="glass-panel" style={{ padding: '24px' }}>
         <h2 style={{ fontSize: '1.2rem', marginBottom: '16px' }}>Importar Historial (Google Sheets)</h2>
         <p style={{ color: 'var(--text-muted)', marginBottom: '20px', fontSize: '0.95rem', lineHeight: '1.5' }}>

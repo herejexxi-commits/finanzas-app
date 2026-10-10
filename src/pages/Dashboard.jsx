@@ -8,6 +8,8 @@ const Dashboard = () => {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [initialBalance, setInitialBalance] = useState(0);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,11 +40,10 @@ const Dashboard = () => {
   }, 0);
   const unifiedBalance = initialBalance + totalTransactionsBalance;
 
-  // Filter transactions for the CURRENT MONTH
-  const currentDate = new Date();
+  // Filter transactions for the SELECTED MONTH
   const currentMonthTransactions = transactions.filter(tx => {
     const txDate = new Date(tx.created_at);
-    return txDate.getMonth() === currentDate.getMonth() && txDate.getFullYear() === currentDate.getFullYear();
+    return txDate.getMonth() === selectedMonth && txDate.getFullYear() === selectedYear;
   });
 
   const tiendaCategories = ['Operativo Tienda', 'Marketing y Publicidad Tienda', 'Suscripciones y Servicios Tienda', 'Tienda Virtual'];
@@ -105,10 +106,12 @@ const Dashboard = () => {
     return null;
   };
 
-  const renderDashboardSection = (title, data) => (
+  const renderDashboardSection = (title, data) => {
+    const monthName = new Date(selectedYear, selectedMonth).toLocaleString('es-ES', { month: 'short' });
+    return (
     <div style={{ marginBottom: '40px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
-        <h2 style={{ fontSize: '1.5rem', color: 'var(--accent-primary)', margin: 0 }}>{title} <span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>({currentDate.toLocaleString('default', { month: 'short' })})</span></h2>
+        <h2 style={{ fontSize: '1.5rem', color: 'var(--accent-primary)', margin: 0 }}>{title} <span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>({monthName})</span></h2>
         <div style={{ background: 'var(--bg-card)', padding: '8px 16px', border: '1px solid var(--accent-primary)', boxShadow: '0 0 10px rgba(255, 107, 0, 0.2)' }}>
           <span style={{ color: 'var(--text-muted)', fontSize: '1rem', marginRight: '8px', textTransform: 'uppercase' }}>NET YIELD:</span>
           <span style={{ fontWeight: 'bold', fontSize: '1.2rem', fontFamily: 'Orbitron', color: data.net >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)', textShadow: data.net >= 0 ? '0 0 5px var(--accent-success)' : '0 0 5px var(--accent-danger)' }}>
@@ -189,11 +192,52 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
-  );
+    );
+  };
+
+  const availableYears = Array.from(new Set([
+    new Date().getFullYear(),
+    ...transactions.map(tx => new Date(tx.created_at).getFullYear())
+  ])).sort((a, b) => b - a);
 
   return (
     <div className="animate-fade-in">
-      <h1 style={{ marginBottom: '20px' }}>Dashboard</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
+        <h1 style={{ margin: 0 }}>Dashboard</h1>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <select 
+            value={selectedMonth} 
+            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+            className="input-field"
+            style={{ width: 'auto', minWidth: '130px', padding: '8px 12px' }}
+          >
+            {Array.from({ length: 12 }, (_, i) => (
+              <option key={i} value={i}>
+                {new Date(0, i).toLocaleString('es-ES', { month: 'long' }).toUpperCase()}
+              </option>
+            ))}
+          </select>
+          <select 
+            value={selectedYear} 
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
+            className="input-field"
+            style={{ width: 'auto', padding: '8px 12px' }}
+          >
+            {availableYears.map(year => (
+              <option key={year} value={year}>{year}</option>
+            ))}
+          </select>
+          <button 
+            className="btn-primary" 
+            onClick={() => window.print()}
+            style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px' }}
+            title="Exportar a PDF"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            PDF
+          </button>
+        </div>
+      </div>
       
       <div className="glass-panel" style={{ padding: '24px', marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
         <div>

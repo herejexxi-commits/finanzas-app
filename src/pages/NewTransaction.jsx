@@ -180,6 +180,7 @@ const NewTransaction = () => {
                     <option value="Vivienda - Segundo Inmueble">Vivienda - Segundo Inmueble 🏠</option>
                     <option value="Supermercado y Despensa">Supermercado y Despensa 🛒</option>
                     <option value="Ocio y Salidas">Ocio y Salidas 🍔</option>
+                    <option value="Regalos y Detalles">Regalos y Detalles 🎁</option>
                     <option value="Movilidad">Movilidad 🚗</option>
                     <option value="Educación y Desarrollo">Educación y Desarrollo 📚</option>
                     <option value="Salud y Bienestar">Salud y Bienestar 🏋️</option>

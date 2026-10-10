@@ -208,8 +208,18 @@ const Dashboard = () => {
           <select 
             value={selectedMonth} 
             onChange={(e) => setSelectedMonth(Number(e.target.value))}
-            className="input-field"
-            style={{ width: 'auto', minWidth: '130px', padding: '8px 12px' }}
+            style={{ 
+              width: 'auto', 
+              minWidth: '130px', 
+              padding: '8px 12px',
+              fontSize: '0.9rem',
+              background: 'var(--bg-card)', 
+              border: '1px solid var(--accent-primary)', 
+              color: 'var(--text-main)',
+              fontFamily: 'Orbitron, sans-serif',
+              cursor: 'pointer',
+              outline: 'none'
+            }}
           >
             {Array.from({ length: 12 }, (_, i) => (
               <option key={i} value={i}>
@@ -220,22 +230,22 @@ const Dashboard = () => {
           <select 
             value={selectedYear} 
             onChange={(e) => setSelectedYear(Number(e.target.value))}
-            className="input-field"
-            style={{ width: 'auto', padding: '8px 12px' }}
+            style={{ 
+              width: 'auto', 
+              padding: '8px 12px',
+              fontSize: '0.9rem',
+              background: 'var(--bg-card)', 
+              border: '1px solid var(--accent-primary)', 
+              color: 'var(--text-main)',
+              fontFamily: 'Orbitron, sans-serif',
+              cursor: 'pointer',
+              outline: 'none'
+            }}
           >
             {availableYears.map(year => (
               <option key={year} value={year}>{year}</option>
             ))}
           </select>
-          <button 
-            className="btn-primary" 
-            onClick={() => window.print()}
-            style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px' }}
-            title="Exportar a PDF"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            PDF
-          </button>
         </div>
       </div>
       

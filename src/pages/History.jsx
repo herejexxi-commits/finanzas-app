@@ -79,15 +79,21 @@ const History = () => {
               filteredTransactions.map((tx) => {
                 const dateObj = new Date(tx.created_at);
                 const dayStr = dateObj.toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: 'short' });
+                const isInvest = tx.category && (tx.category === 'Inversiones' || tx.category.toLowerCase().includes('inversion') || tx.category.toLowerCase().includes('inversión') || tx.category.toLowerCase().includes('broker'));
                 
                 return (
                   <div key={tx.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', paddingBottom: '16px', borderBottom: '1px solid var(--border-color)' }}>
                     <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <p style={{ fontWeight: '600', color: 'var(--text-main)', fontSize: '1.1rem' }}>{tx.category}</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
+                        <p style={{ fontWeight: '600', color: 'var(--text-main)', fontSize: '1.1rem', margin: 0 }}>{tx.category}</p>
                         <span style={{ fontSize: '0.8rem', padding: '2px 8px', borderRadius: '12px', background: 'rgba(255,255,255,0.1)', color: 'var(--text-muted)' }}>
                           {dayStr}
                         </span>
+                        {isInvest && (
+                          <span style={{ fontSize: '0.75rem', padding: '2px 8px', borderRadius: '4px', background: 'rgba(0, 255, 208, 0.15)', color: '#00ffd0', border: '1px solid rgba(0, 255, 208, 0.3)' }}>
+                            Activo / Broker 📈
+                          </span>
+                        )}
                       </div>
                       {tx.description && (
                         <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontStyle: 'italic', marginTop: '4px' }}>
@@ -96,7 +102,12 @@ const History = () => {
                       )}
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px', minWidth: '100px' }}>
-                      <div style={{ fontWeight: 'bold', fontSize: '1.2rem', color: tx.type === 'ingreso' ? 'var(--accent-success)' : 'var(--text-main)', textAlign: 'right' }}>
+                      <div style={{ 
+                        fontWeight: 'bold', 
+                        fontSize: '1.2rem', 
+                        color: isInvest ? '#00ffd0' : (tx.type === 'ingreso' ? 'var(--accent-success)' : 'var(--text-main)'), 
+                        textAlign: 'right' 
+                      }}>
                         {tx.type === 'gasto' ? '-' : '+'}{formatCurrency(tx.amount)}
                       </div>
                       <Link to={`/editar-transaccion/${tx.id}`} style={{ fontSize: '0.8rem', color: 'var(--accent-primary)', textDecoration: 'none', padding: '4px 8px', border: '1px solid var(--accent-primary)', borderRadius: '4px' }}>

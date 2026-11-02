@@ -46,12 +46,22 @@ const Dashboard = () => {
     return txDate.getMonth() === selectedMonth && txDate.getFullYear() === selectedYear;
   });
 
+  const isInvestment = (cat) => cat && (cat === 'Inversiones' || cat.toLowerCase().includes('inversion') || cat.toLowerCase().includes('inversión') || cat.toLowerCase().includes('broker'));
+
+  const totalInvestedAllTime = transactions
+    .filter(tx => isInvestment(tx.category))
+    .reduce((acc, tx) => acc + tx.amount, 0);
+
   const tiendaCategories = ['Operativo Tienda', 'Marketing y Publicidad Tienda', 'Suscripciones y Servicios Tienda', 'Tienda Virtual'];
   const tiendaTransactions = currentMonthTransactions.filter(tx => tiendaCategories.includes(tx.category));
   const personalTransactions = currentMonthTransactions.filter(tx => !tiendaCategories.includes(tx.category));
 
   const processChartData = (txList) => {
-    const exp = txList.filter(tx => tx.type === 'gasto');
+    // Inversiones se consideran transferencia patrimonial (ahorro/broker), no gasto operativo del mes
+    const investments = txList.filter(tx => isInvestment(tx.category));
+    const totalInvestments = investments.reduce((acc, tx) => acc + tx.amount, 0);
+
+    const exp = txList.filter(tx => tx.type === 'gasto' && !isInvestment(tx.category));
     const inc = txList.filter(tx => tx.type === 'ingreso');
     
     const expByCategory = exp.reduce((acc, tx) => {
@@ -71,6 +81,7 @@ const Dashboard = () => {
       incomesChartData: Object.keys(incByCategory).map(k => ({name: k, value: incByCategory[k]})),
       totalExp,
       totalInc,
+      totalInvestments,
       net: totalInc - totalExp
     };
   };
@@ -112,11 +123,21 @@ const Dashboard = () => {
     <div style={{ marginBottom: '40px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
         <h2 style={{ fontSize: '1.5rem', color: 'var(--accent-primary)', margin: 0 }}>{title} <span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>({monthName})</span></h2>
-        <div style={{ background: 'var(--bg-card)', padding: '8px 16px', border: '1px solid var(--accent-primary)', boxShadow: '0 0 10px rgba(255, 107, 0, 0.2)' }}>
-          <span style={{ color: 'var(--text-muted)', fontSize: '1rem', marginRight: '8px', textTransform: 'uppercase' }}>NET YIELD:</span>
-          <span style={{ fontWeight: 'bold', fontSize: '1.2rem', fontFamily: 'Orbitron', color: data.net >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)', textShadow: data.net >= 0 ? '0 0 5px var(--accent-success)' : '0 0 5px var(--accent-danger)' }}>
-            {data.net > 0 ? '+' : ''}{formatCurrency(data.net)}
-          </span>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+          {data.totalInvestments > 0 && (
+            <div style={{ background: 'var(--bg-card)', padding: '8px 16px', border: '1px solid #00ffd0', boxShadow: '0 0 10px rgba(0, 255, 208, 0.2)' }}>
+              <span style={{ color: 'var(--text-muted)', fontSize: '1rem', marginRight: '8px', textTransform: 'uppercase' }}>INVERTIDO:</span>
+              <span style={{ fontWeight: 'bold', fontSize: '1.2rem', fontFamily: 'Orbitron', color: '#00ffd0', textShadow: '0 0 5px #00ffd0' }}>
+                {formatCurrency(data.totalInvestments)}
+              </span>
+            </div>
+          )}
+          <div style={{ background: 'var(--bg-card)', padding: '8px 16px', border: '1px solid var(--accent-primary)', boxShadow: '0 0 10px rgba(255, 107, 0, 0.2)' }}>
+            <span style={{ color: 'var(--text-muted)', fontSize: '1rem', marginRight: '8px', textTransform: 'uppercase' }}>NET YIELD:</span>
+            <span style={{ fontWeight: 'bold', fontSize: '1.2rem', fontFamily: 'Orbitron', color: data.net >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)', textShadow: data.net >= 0 ? '0 0 5px var(--accent-success)' : '0 0 5px var(--accent-danger)' }}>
+              {data.net > 0 ? '+' : ''}{formatCurrency(data.net)}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -251,11 +272,19 @@ const Dashboard = () => {
       
       <div className="glass-panel" style={{ padding: '24px', marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
         <div>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '8px' }}>Saldo Total Unificado</p>
-          <h2 style={{ fontSize: '2.5rem', color: unifiedBalance >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)' }}>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '8px' }}>Saldo Total Unificado (Líquido)</p>
+          <h2 style={{ fontSize: '2.5rem', color: unifiedBalance >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)', margin: 0 }}>
             {formatCurrency(unifiedBalance)}
           </h2>
         </div>
+        {totalInvestedAllTime > 0 && (
+          <div style={{ textAlign: 'right' }}>
+            <p style={{ color: 'var(--text-muted)', marginBottom: '8px' }}>Capital Invertido (Broker)</p>
+            <h2 style={{ fontSize: '2rem', color: '#00ffd0', fontFamily: 'Orbitron', margin: 0, textShadow: '0 0 8px rgba(0, 255, 208, 0.3)' }}>
+              {formatCurrency(totalInvestedAllTime)}
+            </h2>
+          </div>
+        )}
       </div>
 
       {renderDashboardSection("Personal y Tatuajes", personalData)}
